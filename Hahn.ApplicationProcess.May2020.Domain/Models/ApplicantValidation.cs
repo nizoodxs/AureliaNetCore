@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using System;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,9 +24,14 @@ namespace Hahn.ApplicationProcess.May2020.Domain.Models
         /// <param name="countryName"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        private Task<bool> CountryOfOrigin_Validate(string countryName, CancellationToken ct)
+        private async Task<bool> CountryOfOrigin_Validate(string countryName, CancellationToken ct)
         {
-            
+            HttpClient client = new HttpClient();
+            HttpResponseMessage response = await client.GetAsync(string.Format(@"https:////restcountries.eu//rest//v2//name//{0}?fullText=true", countryName));
+            if (response.IsSuccessStatusCode)
+                return true;
+            else
+                return false;
         }
     }
 }
