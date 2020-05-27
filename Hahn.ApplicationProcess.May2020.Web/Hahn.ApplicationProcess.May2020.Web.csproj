@@ -8,4 +8,8 @@
     <PackageReference Include="FluentValidation" Version="8.6.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Hahn.ApplicationProcess.May2020.Domain\Hahn.ApplicationProcess.May2020.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
