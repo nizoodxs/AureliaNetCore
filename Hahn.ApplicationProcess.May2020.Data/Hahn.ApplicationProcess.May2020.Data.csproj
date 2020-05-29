@@ -6,6 +6,11 @@
 
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="8.6.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Hahn.ApplicationProcess.May2020.Domain\Hahn.ApplicationProcess.May2020.Domain.csproj" />
   </ItemGroup>
 
 </Project>
