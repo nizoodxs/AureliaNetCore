@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using FluentValidation.Results;
 using Hahn.ApplicationProcess.May2020.Data;
 using Hahn.ApplicationProcess.May2020.Domain.Models;
-using Microsoft.AspNetCore.Http;
+using Hahn.ApplicationProcess.May2020.Domain.SwaggerExamples;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace Hahn.ApplicationProcess.May2020.Web.Controllers
 {
@@ -22,6 +24,7 @@ namespace Hahn.ApplicationProcess.May2020.Web.Controllers
 
         [Route("{id}")]
         [HttpGet]
+        [SwaggerResponseExample(200, typeof(ApplicantExample))]
         public async Task<ActionResult<Applicant>> Get(int id)
         {
             Applicant applicant = context.Applicants.FirstOrDefault(x => x.ID == id);
@@ -38,6 +41,11 @@ namespace Hahn.ApplicationProcess.May2020.Web.Controllers
 
         [Route("create")]
         [HttpPost]
+        [SwaggerRequestExample(typeof(Applicant), typeof(ApplicantExample))]
+        [SwaggerResponse(201,"Applicant created successfully",typeof(ApplicantExample))]
+        [SwaggerResponseExample(201, typeof(ApplicantExample))]
+        [SwaggerResponse(400, "Invalid values for applicant", typeof(InvalidApplicantExample))]
+        [SwaggerResponseExample(400, typeof(InvalidApplicantExample))]
         public async Task<ActionResult<Applicant>> Create([FromBody] Applicant applicant)
         {
             ApplicantValidation validationRules = new ApplicantValidation();
@@ -45,11 +53,14 @@ namespace Hahn.ApplicationProcess.May2020.Web.Controllers
             if (!validationResult.IsValid)
             {
                 Dictionary<string, string> errResult = new Dictionary<string, string>();
-                foreach (ValidationFailure result in validationResult.Errors)
+                foreach (ValidationFailure failure in validationResult.Errors)
                 {
-                    errResult.Add(result.PropertyName, result.ErrorMessage);
+                    errResult.Add(failure.PropertyName, failure.ErrorMessage);
                 }
-                return new JsonResult(errResult);
+
+                var result = new JsonResult(errResult);
+                result.StatusCode = 400;
+                return result;
             }
             else
             {
@@ -61,12 +72,36 @@ namespace Hahn.ApplicationProcess.May2020.Web.Controllers
 
         [Route("update/{applicantId}")]
         [HttpPut]
+        [SwaggerRequestExample(typeof(Applicant), typeof(ApplicantExample))]
+        [SwaggerResponse(204, "Applicant updated successfully")]
+        [SwaggerResponse(400, "Invalid values for applicant", typeof(InvalidApplicantExample))]
+        [SwaggerResponseExample(400, typeof(InvalidApplicantExample))]
         public async Task<ActionResult<Applicant>> Update(int applicantId, [FromBody] Applicant newData)
         {
             var applicant = context.Applicants.FirstOrDefault(x => x.ID == applicantId);
-            
+            JObject errObj = new JObject();
+
             if (applicant == null)
-                return BadRequest();
+            {
+                errObj.Add("Error", "Applicant does not exists");
+                var result = new JsonResult(errObj);
+                result.StatusCode = 400;
+                return result;
+            }
+
+            ApplicantValidation validationRules = new ApplicantValidation();
+            ValidationResult validationResult = validationRules.Validate(newData);
+            if (!validationResult.IsValid)
+            {
+                foreach (ValidationFailure failure in validationResult.Errors)
+                {
+                    errObj.Add(failure.PropertyName, failure.ErrorMessage);
+                }
+
+                var result = new JsonResult(errObj);
+                result.StatusCode = 400;
+                return result;
+            }
 
             applicant.Name = newData.Name;
             applicant.FamilyName = newData.FamilyName;
@@ -84,6 +119,9 @@ namespace Hahn.ApplicationProcess.May2020.Web.Controllers
 
         [Route("delete/{applicantId}")]
         [HttpDelete]
+        [SwaggerResponse(200, "Delete successful")]
+        [SwaggerResponseExample(200, typeof(ApplicantExample))]
+        [SwaggerResponse(404, "Applicant not found")]
         public async Task<ActionResult<Applicant>> Delete(int applicantId)
         {
             var applicant = context.Applicants.First(x => x.ID == applicantId);

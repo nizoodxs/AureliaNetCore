@@ -17,7 +17,7 @@ namespace Hahn.ApplicationProcess.May2020.Domain.Models
                 {
                     return await CountryOfOrigin_Validate(country);
                 }).WithMessage("Country name is invalid");
-            RuleFor(x => x.EmailAddress).EmailAddress().WithMessage("Email address is invalid");//need to check
+            RuleFor(x => x.EmailAddress).EmailAddress().WithMessage("Email address is invalid");
             RuleFor(x => x.Age).InclusiveBetween(20, 60).WithMessage("Age must be in between 20 and 60");
         }
 

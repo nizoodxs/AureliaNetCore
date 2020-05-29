@@ -5,6 +5,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
+using Hahn.ApplicationProcess.May2020.Domain.Models;
+using System;
+using System.IO;
+using Hahn.ApplicationProcess.May2020.Domain.SwaggerExamples;
 
 namespace Hahn.ApplicationProcess.May2020.Web
 {
@@ -17,6 +23,12 @@ namespace Hahn.ApplicationProcess.May2020.Web
             AppDbConfig dbConfig = new AppDbConfig();
             services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase(dbConfig.DBName));
             services.AddControllers();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Hahn API", Version = "v1" });
+                c.ExampleFilters();
+            });
+            services.AddSwaggerExamplesFromAssemblyOf<Applicant>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -27,8 +39,13 @@ namespace Hahn.ApplicationProcess.May2020.Web
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseRouting();
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Hahn API v1");
+            });
 
+            app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
