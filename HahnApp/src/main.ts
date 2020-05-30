@@ -1,11 +1,14 @@
 import {Aurelia} from 'aurelia-framework';
 import * as environment from '../config/environment.json';
 import {PLATFORM} from 'aurelia-pal';
+import {ValidationMessageProvider} from 'aurelia-validation';
+//import {I18N} from 'aurelia-i18n';
 
 export function configure(aurelia: Aurelia) {
   aurelia.use
     .standardConfiguration()
-    .feature(PLATFORM.moduleName('resources/index'));
+    .feature(PLATFORM.moduleName('resources/index'))
+    .plugin(PLATFORM.moduleName('aurelia-validation'));
 
   aurelia.use.developmentLogging(environment.debug ? 'debug' : 'warn');
 
