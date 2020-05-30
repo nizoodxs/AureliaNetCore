@@ -1,3 +1,19 @@
 <template>
-  <h1>${message}</h1>
+
+  <h1>${heading}</h1>
+  
+  <form>
+    Name: <input type="text" value.bind="formApplicant.Name"></br>
+    FamilyName: <input type="text" value.bind="formApplicant.FamilyName"></br>
+    Address: <input type="text" value.bind="formApplicant.Address"></br>
+    Country of origin: <input type="text" value.bind="formApplicant.CountryOfOrigin"></br>
+    Email: <input type="email" value.bind="formApplicant.EmailAddress"></br>
+    Age: <input type="number" value.bind="formApplicant.Age"></br>
+    Hired: <input type="checkbox" value.bind="formApplicant.Hired"></br>
+    <button click.trigger="send_onclick()">Send</button>
+    <button click.trigger="reset_onclick()">Reset</button>
+    <!-- <button type="submit" disabled.bind="!todoDescription">Add Todo</button> -->
+  </form>
+
 </template>
+
