@@ -1,67 +1,20 @@
 <template>
 
-  <h1>${heading}</h1>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" route-href="view">HahnApp</a>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" route-href="view">View registered applicants</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" route-href="create">Register applicant</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
   
-  <form>
-    <!-- First name -->
-    <div class="form-group" validation-errors.bind="nameErrors">
-      <label for="name">Name</label>
-      <input type="text" class="form-control" id="name"
-              placeholder="First Name"
-              value.bind="formApplicant.Name & validate">
-    </div>
-
-    <!-- Family name -->
-    <div class="form-group" validation-errors.bind="familyNameErrors">
-      <label for="familyName">Family Name</label>
-      <input type="text" class="form-control" id="familyName"
-              placeholder="Family Name"
-              value.bind="formApplicant.FamilyName & validate">
-    </div>
-    
-    <!-- Address -->
-    <div class="form-group" validation-errors.bind="addressErrors">
-      <label for="address">Address</label>
-      <input type="text" class="form-control" id="address"
-              placeholder="Address"
-              value.bind="formApplicant.Address & validate">
-    </div>
-    
-    <!-- Country of origin -->
-    <div class="form-group" validation-errors.bind="countryOfOriginErrors">
-      <label for="countryOfOrigin">Country of origin</label>
-      <input type="text" class="form-control" id="countryOfOrigin"
-              placeholder="Country of origin"
-              value.bind="formApplicant.CountryOfOrigin & validate">
-    </div>
-    
-    <!-- Email -->
-    <div class="form-group" validation-errors.bind="emailErrors">
-      <label for="email">Email</label>
-      <input type="email" class="form-control" id="email"
-              placeholder="abc@example.com"
-              value.bind="formApplicant.EmailAddress & validate">
-    </div>
-    
-    <!-- Age -->
-    <div class="form-group" validation-errors.bind="ageErrors">
-      <label for="age">Age</label>
-      <input type="number" class="form-control" id="age"
-              placeholder="18"
-              value.bind="formApplicant.Age & validate">
-    </div>
-
-    <!-- Hired -->
-    <div class="form-check">
-      <input type="checkbox" class="form-check-input" id="hired"
-              placeholder="18"
-              value.bind="formApplicant.Hired">
-      <label class="form-check-label" for="hired">Hired</label>
-    </div>
-
-    <button class="btn btn-primary" click.trigger="send_onclick()" disabled.bind="controller.errors.length > 0">Send</button>
-    <button click.trigger="reset_onclick()">Reset</button>
-  </form>
+<router-view></router-view>
 
 </template>
 

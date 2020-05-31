@@ -1,8 +1,8 @@
 import {Aurelia} from 'aurelia-framework';
 import * as environment from '../config/environment.json';
 import {PLATFORM} from 'aurelia-pal';
-import {ValidationMessageProvider} from 'aurelia-validation';
-//import {I18N} from 'aurelia-i18n';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'font-awesome/css/font-awesome.css';
 
 export function configure(aurelia: Aurelia) {
   aurelia.use
