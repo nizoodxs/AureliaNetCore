@@ -8,9 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using Hahn.ApplicationProcess.May2020.Domain.Models;
-using System;
-using System.IO;
-using Hahn.ApplicationProcess.May2020.Domain.SwaggerExamples;
+using Serilog;
 
 namespace Hahn.ApplicationProcess.May2020.Web
 {
@@ -38,7 +36,7 @@ namespace Hahn.ApplicationProcess.May2020.Web
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseSerilogRequestLogging();
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
