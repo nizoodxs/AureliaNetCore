@@ -3,46 +3,36 @@ import { Applicant } from './models/Applicant';
 import { BootstrapFormRenderer } from './commons/BootstrapFormRenderer';
 import { ValidationControllerFactory, ValidationRules } from 'aurelia-validation';
 import { inject } from 'aurelia-dependency-injection';
+import { WebApi } from './commons/WebApi';
+import { json } from 'aurelia-fetch-client';
 
 @inject(ValidationControllerFactory)
 export class RegisterApplicant{
-  applicants: Applicant[] = [];
   @bindable formApplicant:Applicant;
   controller = null;
+  webapi:WebApi;
 
   constructor(controllerFactory: ValidationControllerFactory){
     this.controller=controllerFactory.createForCurrentScope();
     this.controller.addRenderer(new BootstrapFormRenderer());
-    
+    this.webapi = new WebApi();    
   }
+  
   send_onclick() {
-    //console.log(this.formApplicant);
-
-    //check if all fields are entered
+    
     this.controller.validate().then(result=>{
       if(result.valid){
-        console.log("valid");
+        this.postApplicant(this.formApplicant);
       }
       else{
         console.log("invalid");
       }
     });
-
-    //push to list 
-    //this.applicants.push(this.formApplicant);
-
-    //reset all fields
   }
 
   reset_onclick(){
     console.log("reset clicked");
-  }
-
-  removeApplicant(applicant) {
-    let index = this.applicants.indexOf(applicant);
-    if (index !== -1) {
-      this.applicants.splice(index, 1);
-    }
+    this.formApplicant = null;
   }
 
   formApplicantChanged(newValue) {
@@ -53,15 +43,33 @@ export class RegisterApplicant{
         .ensure('Address').required().minLength(10).withMessage('Address can not be less than 10 characters')
         .ensure('CountryOfOrigin').required()//need to implement api call
         .ensure('EmailAddress').required().email().withMessage(`\${$value} is not a valid email.`)
-        .ensure('Age').displayName('Age').required().satisfiesRule('integerRange',20,60)
+        .ensure('Age').displayName('Age').required().range(20,60)
         .on(this.formApplicant);
     }
   }
+
+  postApplicant(applicant:Applicant)
+  {
+    this.webapi.client.fetch('create',{
+      method:"post",
+      body:json(applicant)
+    })
+    .then(response => {
+        if(response.status!=201)
+        {
+          console.log(response.json());
+          alert("error");
+          return;
+        }
+        else
+        {
+          this.formApplicant=null;
+        }
+    })
+    .catch(error =>{
+      console.log(error);
+      //return error;
+    });
+  }
 }
 
-ValidationRules.customRule(
-  'integerRange',
-  (value, obj, min, max) => !(value === null || value === undefined
-    || Number.isInteger(value) && value > min && value < max),
-  `\${$displayName} must be an integer between \${$config.min} and \${$config.max}.`,
-  (min, max) => ({ min, max }));  

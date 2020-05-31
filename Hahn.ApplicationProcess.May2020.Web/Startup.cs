@@ -27,6 +27,13 @@ namespace Hahn.ApplicationProcess.May2020.Web
                 c.ExampleFilters();
             });
             services.AddSwaggerExamplesFromAssemblyOf<Applicant>();
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+            }));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -36,6 +43,7 @@ namespace Hahn.ApplicationProcess.May2020.Web
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseCors("MyPolicy");
             app.UseSerilogRequestLogging();
             app.UseSwagger();
             app.UseSwaggerUI(c =>

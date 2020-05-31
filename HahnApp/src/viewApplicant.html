@@ -1,5 +1,27 @@
 <template>
 
   <h1>List of applicants</h1>
-
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Age</th>
+        <th scope="col">Address</th>
+        <th scope="col">Hired</th>
+        <th scope="col">#</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr repeat.for="applicant of applicants">
+        <td>${applicant.Name}</td>
+        <td>${applicant.Age}</td>
+        <td>${applicant.Address}</td>
+        <td>${applicant.Hired}</td>
+      <td>
+        <button click.trigger="remove(applicant)">Remove</button>
+      </td>
+    </li>
+      </tr>
+    </tbody>
+  </table>
 </template>

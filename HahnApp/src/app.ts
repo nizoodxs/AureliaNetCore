@@ -3,9 +3,8 @@ import {RouterConfiguration, Router} from 'aurelia-router';
 
 
 export class App {
-  heading = "HahnApp";
-
   
+  heading = "HahnApp";
   router: Router;
   
   configureRouter(config: RouterConfiguration, router: Router): void {

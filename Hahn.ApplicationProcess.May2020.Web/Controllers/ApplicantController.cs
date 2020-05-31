@@ -6,6 +6,7 @@ using FluentValidation.Results;
 using Hahn.ApplicationProcess.May2020.Data;
 using Hahn.ApplicationProcess.May2020.Domain.Models;
 using Hahn.ApplicationProcess.May2020.Domain.SwaggerExamples;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
@@ -84,10 +85,11 @@ namespace Hahn.ApplicationProcess.May2020.Web.Controllers
         [SwaggerResponseExample(201, typeof(ApplicantExample))]
         [SwaggerResponse(400, "Invalid values for applicant", typeof(InvalidApplicantExample))]
         [SwaggerResponseExample(400, typeof(InvalidApplicantExample))]
-        public async Task<ActionResult<Applicant>> Create([FromBody] Applicant applicant)
+        public async Task<ActionResult<Applicant>> Create([FromBody] object jsonObj)
         {
             try
             {
+                Applicant applicant = Newtonsoft.Json.JsonConvert.DeserializeObject<Applicant>(jsonObj.ToString());
                 ApplicantValidation validationRules = new ApplicantValidation();
                 ValidationResult validationResult = validationRules.Validate(applicant);
                 if (!validationResult.IsValid)
