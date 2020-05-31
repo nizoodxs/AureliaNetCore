@@ -26,6 +26,31 @@ namespace Hahn.ApplicationProcess.May2020.Web.Controllers
             _logger = logger;
         }
 
+        [HttpGet]
+        [SwaggerResponseExample(200, typeof(List<ApplicantExample>))]
+        public async Task<ActionResult<List<Applicant>>> Get()
+        {
+            try
+            {
+                var applicants = context.Applicants;
+                if (applicants != null)
+                {
+                    return applicants.ToList();
+                }
+                else
+                {
+                    _logger.LogInformation("Applicants list not available");
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Could not get list of applicant {msg}", ex.Message);
+                return BadRequest();
+            }
+
+        }
+
         [Route("{id}")]
         [HttpGet]
         [SwaggerResponseExample(200, typeof(ApplicantExample))]
